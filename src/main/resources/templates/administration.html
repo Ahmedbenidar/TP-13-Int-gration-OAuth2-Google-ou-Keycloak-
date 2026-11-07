@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Administration — Portail des dossiers</title>
+    <link rel="stylesheet" th:href="@{/styles/portail.css}">
+</head>
+<body>
+<header class="bandeau">
+    <div class="marque">
+        <span class="sigle">USMBA</span>
+        <div>
+            <div class="titre">Portail des dossiers</div>
+            <div class="sous-titre">Espace administration</div>
+        </div>
+    </div>
+    <nav class="actions-bandeau">
+        <a th:href="@{/espace}">Mon espace</a>
+        <a th:href="@{/profil}">Mon profil</a>
+        <a th:href="@{/deconnexion}">Se déconnecter</a>
+    </nav>
+</header>
+
+<main class="conteneur">
+    <h1>Tableau de bord de l'administration</h1>
+    <p class="chapeau">
+        Cette page n'est accessible qu'aux porteurs du rôle <code>ADMIN</code> tel qu'il figure
+        dans le jeton émis par le fournisseur d'identité.
+    </p>
+
+    <div class="grille-3">
+        <div class="carte">
+            <div class="mesure" th:text="${valides}">0</div>
+            <div class="mesure-legende">dossiers validés</div>
+        </div>
+        <div class="carte">
+            <div class="mesure" th:text="${enAttente}">0</div>
+            <div class="mesure-legende">dossiers en attente</div>
+        </div>
+        <div class="carte">
+            <div class="mesure" th:text="${refuses}">0</div>
+            <div class="mesure-legende">dossiers refusés</div>
+        </div>
+    </div>
+
+    <section class="carte">
+        <h2>Tous les dossiers</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Intitulé</th>
+                <th>Déposant</th>
+                <th>Montant</th>
+                <th>Dépôt</th>
+                <th>Statut</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="d : ${dossiers}">
+                <td th:text="${d.reference()}">ref</td>
+                <td th:text="${d.intitule()}">intitule</td>
+                <td th:text="${d.deposant()}">deposant</td>
+                <td th:text="${#numbers.formatDecimal(d.montant(), 1, 'COMMA', 2, 'POINT')} + ' MAD'">0</td>
+                <td th:text="${#temporals.format(d.dateDepot(), 'dd/MM/yyyy')}">date</td>
+                <td>
+                    <span class="pastille"
+                          th:classappend="${d.statut() == 'VALIDE'} ? 'valide' : (${d.statut() == 'EN_ATTENTE'} ? 'attente' : 'refuse')"
+                          th:text="${d.statut()}">STATUT</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="carte">
+        <h2>Administrateur connecté</h2>
+        <p class="mesure-legende" style="margin:0">
+            <strong th:text="${profil.nomComplet()}">nom</strong>
+            (<span th:text="${profil.identifiant()}">id</span>)
+            — rôles : <span th:text="${#strings.listJoin(profil.roles(), ', ')}">roles</span>
+        </p>
+    </section>
+</main>
+
+<footer class="pied">
+    TP 13 — Intégration OAuth2 / OpenID Connect · Université Sultan Moulay Slimane
+</footer>
+</body>
+</html>

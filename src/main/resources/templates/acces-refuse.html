@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accès refusé — Portail des dossiers</title>
+    <link rel="stylesheet" th:href="@{/styles/portail.css}">
+</head>
+<body>
+<header class="bandeau">
+    <div class="marque">
+        <span class="sigle">USMBA</span>
+        <div>
+            <div class="titre">Portail des dossiers</div>
+            <div class="sous-titre">Contrôle d'accès</div>
+        </div>
+    </div>
+    <nav class="actions-bandeau">
+        <a th:href="@{/espace}">Mon espace</a>
+        <a th:href="@{/deconnexion}">Se déconnecter</a>
+    </nav>
+</header>
+
+<main class="conteneur" style="max-width:720px">
+    <h1>Accès refusé</h1>
+
+    <div class="alerte">
+        Vous êtes bien authentifié, mais votre jeton ne contient pas le rôle nécessaire
+        pour ouvrir cette page.
+    </div>
+
+    <section class="carte" th:if="${profil != null}">
+        <h2>Votre identité</h2>
+        <p class="mesure-legende" style="margin:0 0 14px">
+            <strong th:text="${profil.nomComplet()}">nom</strong>
+            (<span th:text="${profil.identifiant()}">id</span>)
+        </p>
+        <p class="mesure-legende" style="margin:0 0 12px">Rôles présents dans le jeton :</p>
+        <div class="roles">
+            <span class="role" th:each="r : ${profil.roles()}" th:text="${'ROLE_' + r}">ROLE</span>
+        </div>
+        <p class="mesure-legende" style="margin-top:18px">
+            Le rôle <code>ADMIN</code> est requis. Contactez le service informatique pour
+            faire évoluer vos habilitations.
+        </p>
+    </section>
+
+    <p><a class="bouton" th:href="@{/espace}">Retour à mon espace</a></p>
+</main>
+
+<footer class="pied">
+    TP 13 — Intégration OAuth2 / OpenID Connect · Université Sultan Moulay Slimane
+</footer>
+</body>
+</html>

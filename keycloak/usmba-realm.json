@@ -1,0 +1,130 @@
+{
+  "realm": "usmba-realm",
+  "enabled": true,
+  "displayName": "USMBA - Fournisseur d'identite",
+  "displayNameHtml": "USMBA &mdash; Fournisseur d'identite",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "editUsernameAllowed": false,
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "internationalizationEnabled": true,
+  "supportedLocales": ["fr", "en"],
+  "defaultLocale": "fr",
+  "roles": {
+    "realm": [
+      { "name": "ADMIN", "description": "Administrateur du portail" },
+      { "name": "MEMBRE", "description": "Membre deposant des dossiers" },
+      { "name": "OBSERVATEUR", "description": "Consultation seule" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "portail-identite-client",
+      "name": "Portail USMBA",
+      "description": "Client OAuth2 du portail des dossiers",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "usmba-portail-secret-2024",
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "rootUrl": "http://localhost:8100",
+      "baseUrl": "http://localhost:8100",
+      "redirectUris": [
+        "http://localhost:8100/login/oauth2/code/usmba"
+      ],
+      "webOrigins": [
+        "http://localhost:8100"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:8100/*"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm-roles-vers-id-token",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "service-vers-id-token",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "service",
+            "claim.name": "service",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "a.benidar",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ahmed",
+      "lastName": "Benidar",
+      "email": "ahmed.benidar@usmba.ac.ma",
+      "attributes": { "service": ["Direction des etudes"] },
+      "credentials": [
+        { "type": "password", "value": "admin123", "temporary": false }
+      ],
+      "realmRoles": ["ADMIN", "MEMBRE"]
+    },
+    {
+      "username": "s.idalen",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Salma",
+      "lastName": "Idalen",
+      "email": "salma.idalen@usmba.ac.ma",
+      "attributes": { "service": ["Scolarite"] },
+      "credentials": [
+        { "type": "password", "value": "membre123", "temporary": false }
+      ],
+      "realmRoles": ["MEMBRE"]
+    },
+    {
+      "username": "k.ouazzani",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Karim",
+      "lastName": "Ouazzani",
+      "email": "karim.ouazzani@usmba.ac.ma",
+      "attributes": { "service": ["Affaires financieres"] },
+      "credentials": [
+        { "type": "password", "value": "membre123", "temporary": false }
+      ],
+      "realmRoles": ["MEMBRE", "OBSERVATEUR"]
+    }
+  ]
+}

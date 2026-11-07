@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon espace — Portail des dossiers</title>
+    <link rel="stylesheet" th:href="@{/styles/portail.css}">
+</head>
+<body>
+<header class="bandeau">
+    <div class="marque">
+        <span class="sigle">USMBA</span>
+        <div>
+            <div class="titre">Portail des dossiers</div>
+            <div class="sous-titre">Espace personnel</div>
+        </div>
+    </div>
+    <nav class="actions-bandeau">
+        <a th:href="@{/profil}">Mon profil</a>
+        <a th:href="@{/administration/tableau-de-bord}" sec:authorize="hasRole('ADMIN')">Administration</a>
+        <a th:href="@{/deconnexion}">Se déconnecter</a>
+    </nav>
+</header>
+
+<main class="conteneur">
+    <section class="carte">
+        <div class="identite">
+            <div class="avatar" th:text="${profil.initiales()}">AB</div>
+            <div>
+                <div class="nom" th:text="${profil.nomComplet()}">Nom</div>
+                <div class="detail" th:text="${profil.email()}">email</div>
+                <div class="detail">
+                    Identifiant fournisseur :
+                    <strong th:text="${profil.identifiant()}">identifiant</strong>
+                </div>
+            </div>
+        </div>
+        <div class="roles">
+            <span class="role"
+                  th:each="r : ${profil.roles()}"
+                  th:classappend="${r == 'ADMIN'} ? 'admin'"
+                  th:text="${'ROLE_' + r}">ROLE</span>
+        </div>
+    </section>
+
+    <div class="grille-3">
+        <div class="carte">
+            <div class="mesure" th:text="${#lists.size(mesDossiers)}">0</div>
+            <div class="mesure-legende">mes dossiers déposés</div>
+        </div>
+        <div class="carte">
+            <div class="mesure" th:text="${totalDossiers}">0</div>
+            <div class="mesure-legende">dossiers dans le portail</div>
+        </div>
+        <div class="carte">
+            <div class="mesure" th:text="${profil.service() != null} ? ${profil.service()} : 'non renseigné'">service</div>
+            <div class="mesure-legende">service d'appartenance</div>
+        </div>
+    </div>
+
+    <section class="carte">
+        <h2>Mes dossiers</h2>
+        <p class="chapeau" th:if="${#lists.isEmpty(mesDossiers)}" style="margin:0">
+            Aucun dossier n'est rattaché à votre identifiant pour le moment.
+        </p>
+        <table th:unless="${#lists.isEmpty(mesDossiers)}">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Intitulé</th>
+                <th>Montant</th>
+                <th>Dépôt</th>
+                <th>Statut</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="d : ${mesDossiers}">
+                <td th:text="${d.reference()}">ref</td>
+                <td th:text="${d.intitule()}">intitule</td>
+                <td th:text="${#numbers.formatDecimal(d.montant(), 1, 'COMMA', 2, 'POINT')} + ' MAD'">0</td>
+                <td th:text="${#temporals.format(d.dateDepot(), 'dd/MM/yyyy')}">date</td>
+                <td>
+                    <span class="pastille"
+                          th:classappend="${d.statut() == 'VALIDE'} ? 'valide' : (${d.statut() == 'EN_ATTENTE'} ? 'attente' : 'refuse')"
+                          th:text="${d.statut()}">STATUT</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="carte">
+        <h2>Jeton d'identité</h2>
+        <p class="chapeau" style="margin-bottom:12px">
+            Le jeton est émis par le fournisseur, il expire et sera renouvelé silencieusement
+            lors de l'expiration.
+        </p>
+        <p class="mesure-legende">
+            Expiration de l'ID Token : <strong th:text="${expirationJeton}">date</strong>
+        </p>
+    </section>
+</main>
+
+<footer class="pied">
+    TP 13 — Intégration OAuth2 / OpenID Connect · Université Sultan Moulay Slimane
+</footer>
+</body>
+</html>

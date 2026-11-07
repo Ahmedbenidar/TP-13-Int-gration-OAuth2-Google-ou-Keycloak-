@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion — Portail des dossiers</title>
+    <link rel="stylesheet" th:href="@{/styles/portail.css}">
+</head>
+<body>
+<header class="bandeau">
+    <div class="marque">
+        <span class="sigle">USMBA</span>
+        <div>
+            <div class="titre">Portail des dossiers</div>
+            <div class="sous-titre">Connexion déléguée</div>
+        </div>
+    </div>
+</header>
+
+<main class="conteneur" style="max-width:560px">
+    <h1>Se connecter</h1>
+    <p class="chapeau">
+        Le portail ne propose pas de formulaire de mot de passe : il vous redirige vers le
+        fournisseur d'identité de l'université.
+    </p>
+
+    <section class="carte">
+        <h2>Fournisseur d'identité</h2>
+        <p class="chapeau" style="margin-bottom:20px">
+            Vous allez être redirigé vers le serveur d'identité configuré dans
+            <code>application.yml</code> (registration <code>usmba</code>).
+        </p>
+        <a class="bouton" th:href="@{/oauth2/authorization/usmba}">Continuer avec USMBA</a>
+        <a class="bouton secondaire" th:href="@{/}" style="margin-left:10px">Annuler</a>
+    </section>
+</main>
+
+<footer class="pied">
+    TP 13 — Intégration OAuth2 / OpenID Connect · Université Sultan Moulay Slimane
+</footer>
+</body>
+</html>
